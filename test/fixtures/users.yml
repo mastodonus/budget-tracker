@@ -1,13 +1,9 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+<% password_digest = BCrypt::Password.create("password") %>
 
 one:
-  oauth_id: MyString
-  email: MyString
-  name: MyString
-  picture: MyString
+  email_address: one@example.com
+  password_digest: <%= password_digest %>
 
 two:
-  oauth_id: MyString
-  email: MyString
-  name: MyString
-  picture: MyString
+  email_address: two@example.com
+  password_digest: <%= password_digest %>
