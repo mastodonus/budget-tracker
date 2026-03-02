@@ -1,19 +1,25 @@
-<p style="color: green"><%= notice %></p>
-
 <% content_for :title, "Budgets" %>
 
-<h1>Budgets</h1>
+<p class="mb-[1rem] flex justify-between">
+  <span class="text-2xl ">Budgets</span>
+  <%= link_to new_budget_path, class: button_classes(:primary) do %>
+    <%= heroicon "plus" %>
+    New Budget
+  <% end %>
+</p>
 
-<div id="budgets" class="flex gap-[1rem]">
+<div id="budgets" class="flex gap-[1rem] flex-wrap">
   <% @budgets.each do |budget| %>
-    <div class="border-2 rounded-md p-[1rem]">
+    <div class="border-[1px] border-gray-500 rounded-md p-[1rem] flex flex-col gap-[1rem] min-w-[23%]">
       <%= render budget %>
-      <p>
-        <%= link_to "Show this budget", budget %>
-        <%= button_to "Destroy this budget", budget, method: :delete %>
-      </p>
+      <div class="flex justify-end">
+        <%= link_to edit_budget_path(budget), class: button_classes(:primary) do %>
+          <%= heroicon "pencil-square" %>
+        <% end %>
+        <%= button_to budget_path(budget), method: :delete, class: button_classes(:danger) do %>
+          <%= heroicon "trash" %>
+        <% end %>
+      </div>
     </div>
   <% end %>
 </div>
-
-<%= link_to "New budget", new_budget_path %>

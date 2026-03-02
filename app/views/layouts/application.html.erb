@@ -23,14 +23,22 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="w-full h-full flex flex-col">
-      <div class="w-full h-[3rem] border-2 mb-[3rem]">
+  <body class="w-screen h-screen">
+    <main class="w-full h-full flex flex-col ui-bg-color-200">
+      <div class="w-full h-[3rem] ui-bg-color-100 flex justify-between px-[1rem]">
         <% if authenticated? %>
-          <%= button_to "Logout", session_path, method: :delete %>
+          <%= link_to budgets_path, class: button_classes, form: { class: "inline" } do %>
+            <%= heroicon "home", class: "w-[32px] h-[32px]" %>
+          <% end %>
+          <%= button_to session_path, method: :delete, class: button_classes(:danger), form: { class: "inline" } do %>
+            <%= heroicon "arrow-right-start-on-rectangle", class: "w-[32px] h-[32px]" %>
+          <% end %>
         <% end %>
       </div>
-      <div class="h-full mx-[15%]">
+      <% if notice %>
+        <div class="w-full h-[3rem] bg-emerald-900 flex justify-center items-center"><%= notice %></div>
+      <% end %>
+      <div class="h-full mx-[25%] mt-[3rem]">
         <%= yield %>
       </div>
     </main>

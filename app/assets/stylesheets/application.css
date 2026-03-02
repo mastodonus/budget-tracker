@@ -9,24 +9,36 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
+:root {
+    --bg-color-100: #010409; /* darkest */
+    --bg-color-200: #111827; /* slightly lighter */
+    --bg-color-300: #1e293b;
+    --bg-color-400: #334155;
+    --bg-color-500: #475569; /* lightest */
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    color: white;
 }
 
-.card {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 1rem;
-    width: auto;
-    height: auto;
-}
+.ui-bg-color-100 { background-color: var(--bg-color-100); }
+.ui-bg-color-200 { background-color: var(--bg-color-200); }
+.ui-bg-color-300 { background-color: var(--bg-color-300); }
+.ui-bg-color-400 { background-color: var(--bg-color-400); }
+.ui-bg-color-500 { background-color: var(--bg-color-500); }
 
-label {
-    font-weight: bold;
-}
+.ui-text-color-100 { color: var(--bg-color-100); }
+.ui-text-color-200 { color: var(--bg-color-200); }
 
+.form-label{
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
 .form-input {
+    background-color: var(--bg-color-500);
     margin-bottom: 1rem;
+    padding-left: 0.5rem;
 }

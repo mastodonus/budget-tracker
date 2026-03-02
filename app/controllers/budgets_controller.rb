@@ -25,7 +25,7 @@ class BudgetsController < ApplicationController
 
     respond_to do |format|
       if @budget.save
-        format.html { redirect_to @budget, notice: "Budget was successfully created." }
+        format.html { redirect_to budgets_path, notice: "Budget was successfully created." }
         format.json { render :show, status: :created, location: @budget }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class BudgetsController < ApplicationController
   def update
     respond_to do |format|
       if @budget.update(budget_params)
-        format.html { redirect_to @budget, notice: "Budget was successfully updated.", status: :see_other }
+        format.html { redirect_to budgets_path, notice: "Budget was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @budget }
       else
         format.html { render :edit, status: :unprocessable_entity }

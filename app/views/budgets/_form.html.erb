@@ -12,16 +12,16 @@
   <% end %>
 
   <div>
-    <%= form.label :name, style: "display: block" %>
+    <%= form.label :name, style: "display: block", class: "form-label" %>
     <%= form.text_field :name, class: "form-input"  %>
   </div>
 
   <div>
-    <%= form.label :description, style: "display: block" %>
+    <%= form.label :description, style: "display: block", class: "form-label"  %>
     <%= form.text_field :description, class: "form-input" %>
   </div>
 
-  <div>
-    <%= form.submit %>
+  <div class="flex justify-end">
+    <%= form.submit "Save", class: "#{button_classes(:primary)} bg-blue-500 text-white px-[1rem]" %>
   </div>
 <% end %>
