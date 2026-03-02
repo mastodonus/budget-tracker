@@ -1,0 +1,19 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Budgets" %>
+
+<h1>Budgets</h1>
+
+<div id="budgets" class="flex gap-[1rem]">
+  <% @budgets.each do |budget| %>
+    <div class="border-2 rounded-md p-[1rem]">
+      <%= render budget %>
+      <p>
+        <%= link_to "Show this budget", budget %>
+        <%= button_to "Destroy this budget", budget, method: :delete %>
+      </p>
+    </div>
+  <% end %>
+</div>
+
+<%= link_to "New budget", new_budget_path %>

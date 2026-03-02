@@ -1,0 +1,13 @@
+<% content_for :title, "New budget" %>
+
+<h1>New budget</h1>
+
+<div class="card">
+  <%= render "form", budget: @budget %>
+</div>
+
+<br>
+
+<div>
+  <%= link_to "Back to budgets", budgets_path %>
+</div>
