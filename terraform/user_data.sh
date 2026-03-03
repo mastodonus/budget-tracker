@@ -14,7 +14,8 @@ echo "$(date '+%Y-%m-%d %H:%M:%S') >> installing dependencies" >> /home/ec2-user
 sudo dnf install -y  git gcc make docker
 sudo dnf install -y  openssl-devel readline-devel zlib-devel
 sudo dnf install -y  libyaml-devel libffi-devel
-sudo dnf install -y  nodejs nginx postgresql15-server postgresql15
+sudo dnf install -y  nodejs nginx postgresql15-server postgresql15 python3-certbot-nginx
+sudo dnf install -y  certbot python3-certbot-nginx
 
 ##################################################
 # Docker Setup
