@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: budget_tracker_db
     volumes:
-      - /var/lib/postgresql/data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - budget-tracker-network
 
@@ -28,6 +28,9 @@ services:
       - "80"
     networks:
       - budget-tracker-network
+
+volumes:
+  postgres_data:
 
 networks:
   budget-tracker-network:
