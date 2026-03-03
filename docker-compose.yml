@@ -1,0 +1,34 @@
+﻿version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: budget-tracker-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: budget_tracker_db
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
+    networks:
+      - budget-tracker-network
+
+  web:
+    image: ghcr.io/mastodonus/budget-tracker-web:latest
+    container_name: budget-tracker-web
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    expose:
+      - "80"
+    networks:
+      - budget-tracker-network
+
+networks:
+  budget-tracker-network:
+    driver: bridge

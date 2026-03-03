@@ -1,0 +1,105 @@
+﻿name: Deploy Budget Tracker
+
+on:
+  push:
+    branches:
+      - feat/deploy
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: Build & push API
+        run: |
+          docker build -t ghcr.io/mastodonus/budget-tracker-web:latest .
+          docker push ghcr.io/mastodonus/budget-tracker-web:latest
+
+      - name: Initialize Environment (SSH)
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DOMAIN }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+
+            # clean application folder
+            APP_DIR=/home/ec2-user/budget-tracker
+            sudo rm -rf $APP_DIR
+            mkdir -p $APP_DIR
+            cd $APP_DIR
+
+            # Create .env variables
+            cat > .env << EOF
+            RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }}
+            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            EOF
+
+            chmod 600 .env
+            chown ec2-user:ec2-user .env
+
+      - name: Copy docker-compose.yml
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.DOMAIN }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "/home/ec2-user/budget-tracker"
+
+
+      - name: Start Application
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DOMAIN }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd /home/ec2-user/budget-tracker
+
+            # Login to GHCR
+            echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u mastodonus --password-stdin
+
+            # Shut down any running containers and prune
+            docker-compose down --volumes --remove-orphans
+            docker image prune -af
+
+            # Setup nginx
+            sudo tee /etc/nginx/conf.d/budget-tracker.conf > /dev/null << 'EOF'
+            server {
+                listen 80;
+                server_name ${{ secrets.DOMAIN }};
+
+                location / {
+                    proxy_pass http://localhost:80;
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    proxy_set_header X-Forwarded-Proto $scheme;
+                }
+            }
+            EOF
+
+            sudo nginx -t
+            sudo systemctl start nginx || true
+            sudo systemctl reload nginx
+
+            # Obtain SSL certificates automatically
+            sudo certbot --nginx -d ${{ secrets.DOMAIN }} -d api.${{ secrets.DOMAIN }} --non-interactive --agree-tos --email adam.js.osmond@gmail.com --redirect --deploy-hook "systemctl reload nginx"
+
+            # Pull latest containers and start
+            docker-compose pull
+            docker-compose up -d --force-recreate

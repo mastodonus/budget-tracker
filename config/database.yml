@@ -90,9 +90,9 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: budget_tracker_production
-    username: budget_tracker
-    password: <%= ENV["BUDGET_TRACKER_DATABASE_PASSWORD"] %>
+    database: budget_tracker_db
+    username: <%= ENV["POSTGRES_USER"] %>
+    password: <%= ENV["POSTGRES_PASSWORD"] %>
   cache:
     <<: *primary_production
     database: budget_tracker_production_cache
