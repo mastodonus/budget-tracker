@@ -90,6 +90,7 @@ test:
 production:
   primary: &primary_production
     <<: *default
+    host: db
     database: budget_tracker_db
     username: <%= ENV["POSTGRES_USER"] %>
     password: <%= ENV["POSTGRES_PASSWORD"] %>
